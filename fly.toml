@@ -1,0 +1,13 @@
+# fly.toml app configuration file generated for turntaker on 2023-05-03T21:04:41+09:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = "turntaker"
+primary_region = "nrt"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true

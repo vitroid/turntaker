@@ -1,0 +1,33 @@
+body {
+    margin: auto;
+    max-width: 800px;
+    font-family: 'Myriad', sans-serif
+}
+div.body {
+}
+div.container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    /* background-color: #fff; */
+}
+div.button {
+    text-align: center;
+    font-size: 15vh;
+    /* background-color: #eee; */
+    padding: auto;
+}
+a {
+    text-decoration: none;
+}
+div.counter {
+    text-align: center;
+    font-size: 30vh;
+    width: 400px;
+    /* background-color: #ddd; */
+}
+div.remark {
+    text-align: center;
+    font-size: 120%;
+    /* background-color: #ccc; */
+}
