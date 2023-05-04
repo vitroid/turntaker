@@ -5,7 +5,7 @@ from logging import DEBUG, INFO, basicConfig, getLogger
 import tinydb as ti
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 
 # Deployする場合。(環境変数でとれないかな)
@@ -32,7 +32,8 @@ app.add_middleware(
 )
 
 
-db = ti.TinyDB("db.json")
+occasions = ti.TinyDB("occasions.json")
+tokens = ti.TinyDB("tokens.json")
 
 
 @app.get("/healthcheck")
@@ -46,48 +47,79 @@ def get_random_string(length):
     return ''.join(random.choice(letters) for i in range(length))
 
 
-def new_session():
-    query = ti.Query()
+def new_occasion():
+    q = ti.Query()
     while True:
         admin = get_random_string(8)
-        if len(db.search(query.admin == admin)) == 0:
+        if len(occasions.search(q.admin == admin)) == 0:
             record = {"admin": admin,
-                      "token": get_random_string(8),
+                      "occasion_id": get_random_string(8),
                       "count": 1,
-                      "remark": "現在の順番"}
-            db.insert(record)
+                      "waiting": 1,
+                      "title": "Title"}
+            occasions.insert(record)
             return record
 
 
 @app.get("/new")
 def new():
-    """Create a new session.
+    """Create a new occasion.
 
     Returns:
-        token: string
+        occasion_id: string
     """
-    record = new_session();
+    record = new_occasion()
     return record
 
 
 @app.get("/q/{token}")
 def query(token:str):
     q = ti.Query()
-    records = db.search(q.token == token)
+    trecords = tokens.search(q.token == token)
+    if len(trecords) == 0:
+        raise HTTPException(status_code=404, detail="Item not found")
+    if len(trecords) != 1:
+        raise HTTPException(status_code=404, detail="Invalid item")
+    occasion_id = trecords[0]["occasion_id"]
+    records = occasions.search(q.occasion_id == occasion_id)
+    record = records[0]
+    record["admin"] = ""
+    return {"token": token,
+            "title": record["title"],
+            "count": record["count"],
+            "waiting": trecords[0]["waiting"]}
+
+
+@app.get("/r/{occasion_id}")
+def reserve(occasion_id:str):
+    q = ti.Query()
+    records = occasions.search(q.occasion_id == occasion_id)
     if len(records) == 0:
         raise HTTPException(status_code=404, detail="Item not found")
     if len(records) != 1:
         raise HTTPException(status_code=404, detail="Invalid item")
-    logger.debug(records[0])
     record = records[0]
-    record["admin"] = ""
-    return record
+    # 現在見えている番号を発行する。
+    while True:
+        token = get_random_string(8)
+        if len(tokens.search(q.token == token)) == 0:
+            trecord = {"token": token,
+                      "occasion_id": occasion_id,
+                      "waiting": record["waiting"]}
+            tokens.insert(trecord)
+
+            # 待ち番号を1増やす。
+            waiting = record["waiting"] + 1
+            occasions.update({"waiting": waiting},
+                             q.occasion_id == occasion_id)
+
+            return trecord
 
 
 @app.get("/set/{admin}/{count}")
 def set_count(admin:str, count:int):
     q = ti.Query()
-    records = db.search(q.admin == admin)
+    records = occasions.search(q.admin == admin)
     if len(records) == 0:
         raise HTTPException(status_code=404, detail="Item not found")
     if len(records) != 1:
@@ -95,37 +127,46 @@ def set_count(admin:str, count:int):
     logger.debug(records[0])
     # record = records[0]
     # newcount = record["count"]+1
-    db.update({"count": count}, q.admin == admin)
-    records = db.search(q.admin == admin)
+    if count > 0:
+        occasions.update({"count": count}, q.admin == admin)
+        records = occasions.search(q.admin == admin)
     return records[0]
 
 
 # 一応APIとして作ったけど、UIを別に準備するのが面倒なので、その場表示もする。
-@app.get("/Q/{token}", response_class=HTMLResponse)
+@app.get("/customer/{token}", response_class=HTMLResponse)
 async def query_UI(request:Request, token:str):
-    record = query(token)
+    trecord = query(token)
     return templates.TemplateResponse("Q.html", {"request": request,
                                                  "baseurl": BASEURL}
-                                                 | record)
+                                                 | trecord)
 
 
-@app.get("/New", response_class=HTMLResponse)
+@app.get("/", response_class=RedirectResponse)
 async def new_UI(request:Request):
-    logger.debug("New")
     record = new()
-    logger.debug(record)
-    return templates.TemplateResponse("A.html", {"request": request,
-                                                 "inc": record["count"]+1,
-                                                 "dec": record["count"]-1,
-                                                 "baseurl": BASEURL}
-                                                 | record)
+    admin = record["admin"]
+    return RedirectResponse(f"{BASEURL}/admin/{admin}")
 
 
-@app.get("/Set/{admin}/{count}", response_class=HTMLResponse)
+@app.get("/Set/{admin}/{count}", response_class=RedirectResponse)
 async def set_UI(admin:str, count:int, request:Request):
     record = set_count(admin, count)
+    return RedirectResponse(f"{BASEURL}/admin/{admin}")
+
+
+@app.get("/admin/{admin}", response_class=HTMLResponse)
+async def admin_UI(admin:str, request:Request):
+    record = set_count(admin, 0)
     return templates.TemplateResponse("A.html", {"request": request,
                                                  "inc": record["count"]+1,
                                                  "dec": record["count"]-1,
                                                  "baseurl": BASEURL}
                                                  | record)
+
+
+@app.get("/R/{occasion_id}", response_class=RedirectResponse)
+async def reserve_UI(request:Request, occasion_id:str):
+    trecord = reserve(occasion_id)
+    token = trecord["token"]
+    return RedirectResponse(f"{BASEURL}/customer/{token}")

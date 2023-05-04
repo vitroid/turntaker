@@ -1,21 +1,42 @@
 body {
     margin: auto;
-    max-width: 800px;
-    font-family: 'Myriad', sans-serif
-}
-div.body {
+    font-family: 'Myriad', sans-serif;
+    background-color: #222;
+    color: #ffc;
+    /* border: solid 1px; */
 }
 div.container {
     display: flex;
     flex-direction: row;
     justify-content: center;
+    align-items: flex-start;
     /* background-color: #fff; */
+    /* border: solid 1px; */
 }
-div.button {
-    text-align: center;
-    font-size: 15vh;
-    /* background-color: #eee; */
+div.vcontainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* background-color: #fff; */
+    /* border: solid 1px; */
+}
+div.vcontainer2 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: #fff;
+    color: #441;
+    border: solid 1px;
     padding: auto;
+}
+button {
+    text-align: center;
+    font-size: 5vh;
+    padding: 20px;
+    background-color: #333;
+    color: #fec;
+    margin: 20px;
+    border: none;
 }
 a {
     text-decoration: none;
@@ -23,10 +44,17 @@ a {
 div.counter {
     text-align: center;
     font-size: 30vh;
-    width: 400px;
+    width: 30vw;
     /* background-color: #ddd; */
 }
-div.remark {
+h1 {
+    text-align: center;
+    font-size: 150%;
+    background-color: #111;
+    padding: 10px 0 10px 0;
+    margin: 0;
+}
+h2 {
     text-align: center;
     font-size: 120%;
     /* background-color: #ccc; */

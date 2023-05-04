@@ -4,41 +4,59 @@
         <style>
             {% include "main.css" %}
         </style>
+        <script>
+            {% include "main.js" %}
+            var intervalId = setInterval(function() {update_count()}, 3000)
+        </script>
     </head>
     <body>
-        <div class="body">
-            <div class="remark">
-                {{remark}}
-            </div>
+        <div class="vcontainer">
+            <h1 id="title">
+                {{title}}
+            </h1>
             <div class="container">
-                <div  class="button">
-                    <a href="{{baseurl}}/Set/{{admin}}/{{dec}}">
-                        –
-                    </a>
+                <div class="vcontainer">
+                    <h2>
+                        現在の順番
+                    </h2>
+                    <div class="counter" id="count">
+                        {{count}}
+                    </div>
+                    <div class="container">
+                        <div  class="button" onclick="decrement()">
+                            <button>
+                                –
+                            </button>
+                        </div>
+                        <div class="button" onclick="increment()">
+                            <button>
+                                +
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div class="counter">
-                    {{count}}
-                </div>
-                <div class="button">
-                    <a href="{{baseurl}}/Set/{{admin}}/{{inc}}">
-                        +
+                <div class="vcontainer2">
+                    <h2>
+                        次の番号
+                    </h2>
+                    <div class="counter" id="waiting">
+                        {{waiting}}
+                    </div>
+                    <a href="{{baseurl}}/R/{{occasion_id}}">
+                        <div id="qrcode" class="container"></div>
                     </a>
+                    <script type="text/javascript">
+                        var qrcode = new QRCode(document.getElementById("qrcode"), {
+                            text: "{{baseurl}}/R/{{occasion_id}}",
+                            width: 128,
+                            height: 128,
+                            colorDark : "#442",
+                            colorLight : "#eee",
+                            correctLevel : QRCode.CorrectLevel.H
+                        });
+                    </script>
                 </div>
             </div>
-            <div class="remark">
-                下のQRコードで、どこでも順番を確認できます
-            </div>
-            <div id="qrcode" class="container"></div>
-            <script type="text/javascript">
-                var qrcode = new QRCode(document.getElementById("qrcode"), {
-                    text: "{{baseurl}}/Q/{{token}}",
-                    width: 128,
-                    height: 128,
-                    colorDark : "#5868bf",
-                    colorLight : "#ffffff",
-                    correctLevel : QRCode.CorrectLevel.H
-                });
-            </script>
         </div>
     </body>
 </html>

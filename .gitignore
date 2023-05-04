@@ -1,4 +1,4 @@
 *.lock
 GoogleRun
 .deta
-db.json
+*.json
