@@ -11,6 +11,10 @@ https://ahmadrosid.com/blog/deploy-fastapi-flyio
   * Aでは右の数字を省略。
   * Qでも右の数字は省略。
 * QRコードで順番とりできるようにした。
+* fly volumeで1GB確保。
+```shell
+flyctl vol create turntaker_data --size 1
+```
 
 ## ToDo
 * しかし肝心の子供が番号どりするにはどうしたらいい?

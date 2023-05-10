@@ -47,12 +47,17 @@ div.counter {
     width: 30vw;
     /* background-color: #ddd; */
 }
-h1 {
+input, h1 {
     text-align: center;
     font-size: 150%;
     background-color: #111;
+    color: #fec;
     padding: 10px 0 10px 0;
     margin: 0;
+    border: none;
+}
+textarea:focus, input:focus{
+    outline: none;
 }
 h2 {
     text-align: center;

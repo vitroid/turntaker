@@ -1,3 +1,4 @@
+import platform
 import random
 import string
 from logging import DEBUG, INFO, basicConfig, getLogger
@@ -8,10 +9,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 
-# Deployする場合。(環境変数でとれないかな)
-BASEURL="https://turntaker.fly.dev"
-# ローカルデバッグ。
-# BASEURL="http://127.0.0.1:8000"
+if platform.uname().node == "vitroid-brass.local":
+    # ローカルデバッグ。
+    BASEURL="http://127.0.0.1:8000"
+    BASEPATH="."
+else:
+    # Deployする場合。(環境変数でとれないかな)
+    BASEURL="https://turntaker.fly.dev"
+    BASEPATH="/data"
 
 basicConfig(level=DEBUG)
 logger = getLogger()
@@ -32,8 +37,8 @@ app.add_middleware(
 )
 
 
-occasions = ti.TinyDB("occasions.json")
-tokens = ti.TinyDB("tokens.json")
+occasions = ti.TinyDB(f"{BASEPATH}/occasions.json")
+tokens = ti.TinyDB(f"{BASEPATH}/tokens.json")
 
 
 @app.get("/healthcheck")
@@ -130,6 +135,22 @@ def set_count(admin:str, count:int):
     if count > 0:
         occasions.update({"count": count}, q.admin == admin)
         records = occasions.search(q.admin == admin)
+    return records[0]
+
+
+@app.get("/t/{admin}/{title}")
+def set_title(admin:str, title:str):
+    q = ti.Query()
+    records = occasions.search(q.admin == admin)
+    if len(records) == 0:
+        raise HTTPException(status_code=404, detail="Item not found")
+    if len(records) != 1:
+        raise HTTPException(status_code=404, detail="Invalid item")
+    logger.debug(records[0])
+    # record = records[0]
+    # newcount = record["count"]+1
+    occasions.update({"title": title}, q.admin == admin)
+    records = occasions.search(q.admin == admin)
     return records[0]
 
 

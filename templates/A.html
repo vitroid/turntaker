@@ -6,14 +6,13 @@
         </style>
         <script>
             {% include "main.js" %}
-            var intervalId = setInterval(function() {update_count()}, 3000)
+            // 自動アップデートは要らない。
+            // var intervalId = setInterval(function() {update_count()}, 3000)
         </script>
     </head>
     <body>
         <div class="vcontainer">
-            <h1 id="title">
-                {{title}}
-            </h1>
+            <input value="{{title}}" type="text" id="title" />
             <div class="container">
                 <div class="vcontainer">
                     <h2>
@@ -28,35 +27,57 @@
                                 –
                             </button>
                         </div>
+                        <a href="{{baseurl}}/R/{{occasion_id}}">
+                            <div id="qrcode" class="container"></div>
+                        </a>
+                        <script type="text/javascript">
+                            var qrcode = new QRCode(document.getElementById("qrcode"), {
+                                text: "{{baseurl}}/R/{{occasion_id}}",
+                                width: 128,
+                                height: 128,
+                                colorDark : "#442",
+                                colorLight : "#eee",
+                                correctLevel : QRCode.CorrectLevel.H
+                            });
+                        </script>
                         <div class="button" onclick="increment()">
                             <button>
                                 +
                             </button>
                         </div>
                     </div>
-                </div>
-                <div class="vcontainer2">
+                <!-- </div>
+                <div class="vcontainer2"> -->
                     <!-- <h2>
                         次の番号
                     </h2>
                     <div class="counter" id="waiting">
                         {{waiting}}
                     </div> -->
-                    <a href="{{baseurl}}/R/{{occasion_id}}">
-                        <div id="qrcode" class="container"></div>
-                    </a>
-                    <script type="text/javascript">
-                        var qrcode = new QRCode(document.getElementById("qrcode"), {
-                            text: "{{baseurl}}/R/{{occasion_id}}",
-                            width: 128,
-                            height: 128,
-                            colorDark : "#442",
-                            colorLight : "#eee",
-                            correctLevel : QRCode.CorrectLevel.H
-                        });
-                    </script>
                 </div>
             </div>
         </div>
+        <script>
+// Get the input box
+let input = document.getElementById('title');
+
+// Init a timeout variable to be used below
+let timeout = null;
+
+// Listen for keystroke events
+input.addEventListener('keyup', function (e) {
+    // Clear the timeout if it has already been set.
+    // This will prevent the previous task from executing
+    // if it has been less than <MILLISECONDS>
+    clearTimeout(timeout);
+
+    // Make a new timeout set to go off in 1000ms (1 second)
+    timeout = setTimeout(function () {
+        fetch("{{BASEURL}}/t/{{admin}}/"+input.value)
+        console.log('Input Value:', input.value);
+    }, 1000);
+});
+
+        </script>
     </body>
 </html>
