@@ -1,10 +1,14 @@
-# fly.toml app configuration file generated for turntaker on 2023-05-05T01:32:29+09:00
+# fly.toml app configuration file generated for turntaker on 2023-05-10T19:48:30+09:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
 app = "turntaker"
 primary_region = "nrt"
+
+[[mounts]]
+  source = "turntaker_data"
+  destination = "/data"
 
 [http_service]
   internal_port = 8080

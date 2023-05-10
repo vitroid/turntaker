@@ -6,8 +6,7 @@
         </style>
         <script>
             {% include "main.js" %}
-            // 自動アップデートは要らない。
-            // var intervalId = setInterval(function() {update_count()}, 3000)
+            var intervalId = setInterval(function() {update_count()}, 15000)
         </script>
     </head>
     <body>
@@ -35,8 +34,8 @@
                                 text: "{{baseurl}}/R/{{occasion_id}}",
                                 width: 128,
                                 height: 128,
-                                colorDark : "#442",
-                                colorLight : "#eee",
+                                colorDark : "#000",
+                                colorLight : "#fff",
                                 correctLevel : QRCode.CorrectLevel.H
                             });
                         </script>
