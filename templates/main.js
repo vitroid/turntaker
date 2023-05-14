@@ -45,6 +45,11 @@ function update2(){
         console.log(json)
         setval("title", json.title)
         setval("count", json.count)
+        if (json.mode == 0){
+            document.getElementById("idpane").style.display = "none";
+        }else{
+            document.getElementById("idpane").style.display = "flex";
+        }
         // if ( json.waiting <= json.count ){
         //     document.getElementById("count").style.color = "#F44"
         // }

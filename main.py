@@ -6,7 +6,8 @@ from logging import DEBUG, INFO, basicConfig, getLogger
 import tinydb as ti
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 if platform.uname().node == "vitroid-brass.local":
@@ -25,6 +26,13 @@ templates = Jinja2Templates(directory="templates")
 
 app = FastAPI()
 
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+favicon_path = 'static/favicon.svg'
+
+@app.get('/favicon.svg', include_in_schema=False)
+async def favicon():
+    return FileResponse(favicon_path)
 
 origins = ["*"]
 
@@ -59,6 +67,7 @@ def new_occasion():
         if len(occasions.search(q.admin == admin)) == 0:
             record = {"admin": admin,
                       "occasion_id": get_random_string(8),
+                      "smartphone_mode": 0,
                       "count": 1,
                       "waiting": 1,
                       "title": "Title"}
@@ -92,6 +101,7 @@ def query(token:str):
     return {"token": token,
             "title": record["title"],
             "count": record["count"],
+            "mode": record["smartphone_mode"],
             "waiting": trecords[0]["waiting"]}
 
 
@@ -150,6 +160,22 @@ def set_title(admin:str, title:str):
     # record = records[0]
     # newcount = record["count"]+1
     occasions.update({"title": title}, q.admin == admin)
+    records = occasions.search(q.admin == admin)
+    return records[0]
+
+
+@app.get("/s/{admin}/{mode}")
+def set_smartphone_mode(admin:str, mode:int):
+    q = ti.Query()
+    records = occasions.search(q.admin == admin)
+    if len(records) == 0:
+        raise HTTPException(status_code=404, detail="Item not found")
+    if len(records) != 1:
+        raise HTTPException(status_code=404, detail="Invalid item")
+    logger.debug(records[0])
+    # record = records[0]
+    # newcount = record["count"]+1
+    occasions.update({"smartphone_mode": mode}, q.admin == admin)
     records = occasions.search(q.admin == admin)
     return records[0]
 

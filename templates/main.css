@@ -1,15 +1,23 @@
 body {
     margin: auto;
     font-family: 'Myriad', sans-serif;
-    background-color: #222;
+    /* background-color: #222; */
     color: #ffc;
     /* border: solid 1px; */
+    background: repeating-linear-gradient(
+    45deg,
+    #222,
+    #222 100px,
+    #860 100px,
+    #860 200px
+    );
 }
 div.container {
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: flex-start;
+    margin-top: 10px;
     /* background-color: #fff; */
     /* border: solid 1px; */
 }
@@ -20,14 +28,31 @@ div.vcontainer {
     /* background-color: #fff; */
     /* border: solid 1px; */
 }
+#issuepane {
+    display: none;
+}
+
 div.vcontainer2 {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    background-color: #fff8;
+    color: #220;
+    border: solid 1px;
+    padding: 25px;
+    border-radius: 25px;
+    margin-left: 100px;
+}
+div.vcontainer3 {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    background-color: #fff;
-    color: #441;
+    background-color: #fff8;
+    color: #220;
     border: solid 1px;
-    padding: auto;
+    padding: 25px;
+    border-radius: 25px;
+    margin-left: 100px;
 }
 button {
     text-align: center;
@@ -37,6 +62,7 @@ button {
     color: #fec;
     margin: 20px;
     border: none;
+    border-radius: 15px;
 }
 a {
     text-decoration: none;
@@ -44,7 +70,9 @@ a {
 div.counter {
     text-align: center;
     font-size: 30vh;
-    width: 30vw;
+    font-family: "Big Shoulders Stencil Text", sans-serif;
+    /* width: 30vw; */
+    /* border-radius: 25px; */
     /* background-color: #ddd; */
 }
 input, h1 {
@@ -64,3 +92,68 @@ h2 {
     font-size: 120%;
     /* background-color: #ccc; */
 }
+div.qrcode {
+    margin: auto;
+    padding: 20px;
+    background-color: #fff;
+    width: 128px;
+}
+div.topright {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+
+}
+
+
+
+/* https://www.cssscript.com/realistic-ios-switch-pure-css/ */
+.form-switch {
+    display: inline-block;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+.form-switch i {
+    position: relative;
+    display: inline-block;
+    margin-right: .5rem;
+    width: 46px;
+    height: 26px;
+    background-color: #ddd;
+    border-radius: 23px;
+    vertical-align: text-bottom;
+    transition: all 0.3s linear;
+}
+.form-switch i::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    width: 42px;
+    height: 22px;
+    background-color: #fff;
+    border-radius: 11px;
+    transform: translate3d(2px, 2px, 0) scale3d(1, 1, 1);
+    transition: all 0.25s linear;
+}
+.form-switch i::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    width: 22px;
+    height: 22px;
+    background-color: #fff;
+    border-radius: 11px;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.24);
+    transform: translate3d(2px, 2px, 0);
+    transition: all 0.2s ease-in-out;
+}
+.form-switch:active i::after {
+    width: 28px;
+    transform: translate3d(2px, 2px, 0);
+}
+.form-switch:active input:checked + i::after { transform: translate3d(16px, 2px, 0); }
+.form-switch input { display: none; }
+.form-switch input:checked + i { background-color: #4BD763; }
+.form-switch input:checked + i::before { transform: translate3d(18px, 2px, 0) scale3d(0, 0, 0); }
+.form-switch input:checked + i::after { transform: translate3d(22px, 2px, 0); }
+/* end */

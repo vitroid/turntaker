@@ -8,8 +8,19 @@
             {% include "main.js" %}
             var intervalId = setInterval(function() {update_count()}, 15000)
         </script>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Big Shoulders Stencil Text">
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel=”mask-icon” href=”/favicon.svg” color=”#000000" />
+        <link rel=”apple-touch-icon” href=”/favicon.svg” />
     </head>
     <body>
+        <div class="topright">
+            <label class="form-switch">
+                <input type="checkbox" id="issue">
+                <i></i>
+                QRコードで発券
+            </label>
+        </div>
         <div class="vcontainer">
             <input value="{{title}}" type="text" id="title" />
             <div class="container">
@@ -26,57 +37,30 @@
                                 –
                             </button>
                         </div>
-                        <a href="{{baseurl}}/R/{{occasion_id}}">
-                            <div id="qrcode" class="container"></div>
-                        </a>
-                        <script type="text/javascript">
-                            var qrcode = new QRCode(document.getElementById("qrcode"), {
-                                text: "{{baseurl}}/R/{{occasion_id}}",
-                                width: 128,
-                                height: 128,
-                                colorDark : "#000",
-                                colorLight : "#fff",
-                                correctLevel : QRCode.CorrectLevel.H
-                            });
-                        </script>
                         <div class="button" onclick="increment()">
                             <button>
                                 +
                             </button>
                         </div>
                     </div>
-                <!-- </div>
-                <div class="vcontainer2"> -->
-                    <!-- <h2>
-                        次の番号
-                    </h2>
-                    <div class="counter" id="waiting">
-                        {{waiting}}
-                    </div> -->
+                </div>
+                <div class="vcontainer3">
+                    <div class="vcontainer" id="issuepane">
+                        <h2>
+                            次の番号
+                        </h2>
+                        <div class="counter" id="waiting">
+                            {{waiting}}
+                        </div>
+                    </div>
+                    <a href="{{baseurl}}/R/{{occasion_id}}">
+                        <div id="qrcode" class="qrcode"></div>
+                    </a>
                 </div>
             </div>
         </div>
         <script>
-// Get the input box
-let input = document.getElementById('title');
-
-// Init a timeout variable to be used below
-let timeout = null;
-
-// Listen for keystroke events
-input.addEventListener('keyup', function (e) {
-    // Clear the timeout if it has already been set.
-    // This will prevent the previous task from executing
-    // if it has been less than <MILLISECONDS>
-    clearTimeout(timeout);
-
-    // Make a new timeout set to go off in 1000ms (1 second)
-    timeout = setTimeout(function () {
-        fetch("{{BASEURL}}/t/{{admin}}/"+input.value)
-        console.log('Input Value:', input.value);
-    }, 1000);
-});
-
+            {% include "sub.js" %}
         </script>
     </body>
 </html>
