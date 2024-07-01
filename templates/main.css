@@ -25,8 +25,19 @@ div.vcontainer {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    /* background-color: #fff; */
+    /* background-color: #fff8; */
     /* border: solid 1px; */
+    /* border-radius: 25px; */
+}
+div.leftpanel {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: #0008;
+    /* border: solid 1px; */
+    border-radius: 25px;
+    padding-left: 30px;
+    padding-right: 30px;
 }
 #issuepane {
     display: none;
@@ -70,7 +81,7 @@ a {
 div.counter {
     text-align: center;
     font-size: 30vh;
-    font-family: "Big Shoulders Stencil Text", sans-serif;
+    font-family: "Stardos Stencil", sans-serif;
     /* width: 30vw; */
     /* border-radius: 25px; */
     /* background-color: #ddd; */
